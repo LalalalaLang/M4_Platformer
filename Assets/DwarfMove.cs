@@ -5,14 +5,25 @@ using UnityEngine;
 public class DwarfMove : MonoBehaviour
 {
 
-    public float speed = 20f;
-    private bool jump;
+    public float speed;
 
+    private bool jump = false;
+    
+    public float jumpForce;
+
+
+    private Rigidbody2D rigidbody;
+
+
+    private void Awake()
+    {
+        rigidbody = GetComponent<Rigidbody2D>();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -35,14 +46,21 @@ public class DwarfMove : MonoBehaviour
         {
             transform.Translate(Vector3.right * Time.deltaTime * speed);
         }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            transform.Translate(Vector3.up * Time.deltaTime * jumpForce);
+        }
 
-        if (jump = true)
+        /*if (jump)
         {
             // on demande à la touche space de multiplier par 5 la force du saut par la vélocité
-            rigidbodyComponent.AddForce(Vector3.up * 5, ForceMode.VelocityChange);
+            rigidbody.AddForce(Vector3.up * 5, ForceMode.VelocityChange);
             jump = false;
         }
-        rigidbodyComponent.velocity = new Vector3(horizontalInput, rigidbodyComponent.velocity.y, 0);
+        rigidbody.velocity = new Vector3(horizontalInput, rigidbodyComponent.velocity.y, 0);
+    }*/
+
     }
 }
-}
+
+
