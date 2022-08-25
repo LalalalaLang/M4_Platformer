@@ -4,21 +4,26 @@ using UnityEngine;
 
 public class DwarfMove : MonoBehaviour
 {
-
+    private Rigidbody2D rb;
     public float speed;
-
-    private bool jump = false;
-    
     public float jumpForce;
+    private float moveInput;
 
+    private bool isGrounded;
+    public Transform feetPos;
+    public float checkRadius;
+    public LayerMask whatIsGround;
 
-    private Rigidbody2D rigidbody;
+    private float jumpTimeCounter;
+    public float jumpTime;
+    private bool isJumping;
 
 
     private void Awake()
     {
-        rigidbody = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
     }
+
 
     // Start is called before the first frame update
     void Start()
@@ -26,19 +31,14 @@ public class DwarfMove : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            jump = true;
-
-        }
-    }
-
     private void FixedUpdate()
     {
-        if (Input.GetKey(KeyCode.LeftArrow))
+        moveInput = Input.GetAxisRaw("Horizontal");
+        rb.velocity = new Vector2(moveInput * speed, rb.velocity.y);
+
+
+        //simple move ok but no jump!!! grr!
+        /*if (Input.GetKey(KeyCode.LeftArrow))
         {
             transform.Translate(-Vector3.right * Time.deltaTime * speed);
         }
@@ -49,18 +49,53 @@ public class DwarfMove : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             transform.Translate(Vector3.up * Time.deltaTime * jumpForce);
-        }
-
-        /*if (jump)
-        {
-            // on demande à la touche space de multiplier par 5 la force du saut par la vélocité
-            rigidbody.AddForce(Vector3.up * 5, ForceMode.VelocityChange);
-            jump = false;
-        }
-        rigidbody.velocity = new Vector3(horizontalInput, rigidbodyComponent.velocity.y, 0);
-    }*/
+        }*/
 
     }
+
+    // Update is called once per frame
+    void Update()
+    {
+        isGrounded = Physics2D.OverlapCircle(feetPos.position, checkRadius, whatIsGround);
+
+        if(moveInput > 0)
+        {
+            transform.eulerAngles = new Vector3(0, 0, 0);
+        }
+        else if(moveInput < 0)
+        {
+            transform.eulerAngles = new Vector3(0, 100, 0);
+        }
+
+
+        if(isGrounded == true && Input.GetKeyDown(KeyCode.Space))
+        {
+            isJumping = true;
+            jumpTimeCounter = jumpTime;
+            rb.velocity = Vector2.up * jumpForce;
+        }
+
+        if (Input.GetKey(KeyCode.Space) && isJumping == true)
+        {
+            if(jumpTimeCounter > 0)
+            {
+                rb.velocity = Vector2.up * jumpForce;
+                jumpTimeCounter -= Time.deltaTime;
+            }
+            else
+            {
+                isJumping = false;
+            }
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            isJumping = false;
+        }
+
+    }
+
+    
 }
 
 
