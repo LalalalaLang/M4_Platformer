@@ -4,16 +4,19 @@ using UnityEngine;
 
 public class DwarfMove : MonoBehaviour
 {
+    //to move
     private Rigidbody2D rb;
     public float speed;
     public float jumpForce;
     private float moveInput;
 
+    //to detect ground
     private bool isGrounded;
     public Transform feetPos;
     public float checkRadius;
     public LayerMask whatIsGround;
 
+    //to check jumps
     private float jumpTimeCounter;
     public float jumpTime;
     private bool isJumping;
@@ -37,34 +40,20 @@ public class DwarfMove : MonoBehaviour
         rb.velocity = new Vector2(moveInput * speed, rb.velocity.y);
 
 
-        //simple move ok but no jump!!! grr!
-        /*if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            transform.Translate(-Vector3.right * Time.deltaTime * speed);
-        }
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            transform.Translate(Vector3.right * Time.deltaTime * speed);
-        }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            transform.Translate(Vector3.up * Time.deltaTime * jumpForce);
-        }*/
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        isGrounded = Physics2D.OverlapCircle(feetPos.position, checkRadius, whatIsGround);
+        isGrounded = Physics2D.OverlapCircle(rb.position, checkRadius, whatIsGround);
 
         if(moveInput > 0)
         {
-            transform.eulerAngles = new Vector3(0, 0, 0);
+            transform.localScale = new Vector3(1, 1, 1);
         }
         else if(moveInput < 0)
         {
-            transform.eulerAngles = new Vector3(0, 100, 0);
+            transform.localScale = new Vector3(-1, 1, 1);
         }
 
 
